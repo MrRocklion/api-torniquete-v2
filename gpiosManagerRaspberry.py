@@ -2,7 +2,7 @@ import os
 from gpiozero import Device
 from gpiozero import DigitalOutputDevice, DigitalInputDevice
 from dotenv import load_dotenv
-import time
+
 load_dotenv()
 
 # Detecta entorno desde .env
@@ -22,114 +22,65 @@ else:
     Device.pin_factory = RPiGPIOFactory()
     print("Usando RPiGPIOFactory (Raspberry Pi 3)")
 
+import time
 
 
 class GpiosManager():
     def __init__(self):
         # Pines de salida
-        self.cerradura = DigitalOutputDevice(6)
-        self.electroiman = DigitalOutputDevice(5)
-        self.semaforo = DigitalOutputDevice(27)
-        self.actuador_up = DigitalOutputDevice(21)
-        self.actuador_down = DigitalOutputDevice(20)
-        self.electroiman_especial = DigitalOutputDevice(17)
-        self.pin_libre3 = DigitalOutputDevice(24)
+        self.normal_electromagnet = DigitalOutputDevice(6)
+        self.special_electromagnet = DigitalOutputDevice(26)
+        self.lock = DigitalOutputDevice(18)
+        self.arrowLight = DigitalOutputDevice(23)
 
         # Pines de entrada
-        self.sensor_45 = DigitalInputDevice(16, pull_up=True)
-        self.sensor = DigitalInputDevice(26, pull_up=True)
-        self.pulsante_1 = DigitalInputDevice(2, pull_up=True)
+        self.sensor = DigitalInputDevice(22, pull_up=True)
+        self.pulsante = DigitalInputDevice(2,pull_up=True)
         #estado inicial de pines
-        self.cerradura.on()
-        self.electroiman.off()
-        self.actuador_up.on()
-        self.actuador_down.on()
-        self.semaforo.on()
-        self.electroiman_especial.off()
-        self.pin_libre3.on()
+        self.normal_electromagnet.on()
+        self.special_electromagnet.on()
+        self.lock.on()
+        self.arrowLight.on()
 
-    def turnstileOpen(self):
-        self.cerradura.off()
-        self.semaforo.off()
-        return "puerta general abierta"
 
-    def turnstileBlock(self):
-        self.cerradura.on()
-        self.semaforo.on()
-        return "puerta general bloqueada"
+    def normal_electromagnet_open(self):
+        self.normal_electromagnet.off()
+        self.arrowLight.off()
+        return "Cerradura Magnetica Puerta Normal abierta"
 
-    def testLock(self):
-        self.cerradura.off()
+    def normal_electromagnet_close(self):
+        self.normal_electromagnet.on()
+        self.arrowLight.on()
+        return "Cerradura Magenitca Puerta Normal bloqueada"
+    
+    def special_electromagnet_open(self):
+        self.special_electromagnet.off()
+        self.arrowLight.off()
+        return "Cerradura Magnetica Puerta Especial Abierta"
+
+    def special_electromagnet_close(self):
+        self.special_electromagnet.on()
+        self.arrowLight.on()
+        return "Cerradura Magnetica Puerta Especial Cerrada"
+
+    def open_lock(self):
+        self.lock.off()
+
+    def close_lock(self):
+        self.lock.on()
+
+    def test_lock(self):
+        self.lock.off()
         time.sleep(1)
-        self.cerradura.on()
-        time.sleep(1)
-        return 'Cerradura 1 testeada con exito'
+        self.lock.on()
 
-    def testArrow(self):
-        self.semaforo.off()
+    def test_arrow(self):
+        self.arrowLight.off()
         time.sleep(1)
-        self.semaforo.on()
-        time.sleep(2)
+        self.arrowLight.on()
         return 'Luz Led testeada con exito'
 
-    def specialDoorOpen(self):
-        self.electroiman_especial.on()
-        self.actuador_down.on()
-        self.actuador_up.off()
-        self.semaforo.off()
-        return "Puerta especial Abierta"
-
-    def specialDoorClose(self):
-        self.electroiman_especial.off()
-        self.actuador_up.on()
-        self.actuador_down.off()
-        self.semaforo.on()
-        return "Puerta Especial Cerrada"
-
-    def specialDoorOff(self):
-        self.actuador_up.on()
-        self.actuador_down.on()
-        self.semaforo.on()
-        return "sistema silla de ruedas apagado"
-
-    def rebootButton(self):
-        return self.pulsante_1.value == 0
-
-    def ReadSensor(self):
+    def read_sensor(self):
         return self.sensor.value == 0
 
-    def ReadSensor45(self):
-        return self.sensor_45.value == 0
 
-    def validador_on(self):
-        self.validador.off()
-        return True
-
-    def validador_off(self):
-        self.validador.on()
-        return True
-
-    def restart_validator(self):
-        self.validador.on()
-        time.sleep(1)
-        self.validador.off()
-        time.sleep(4)
-        return True
-
-    def doorOpen(self):
-        self.electroiman.on()
-        self.semaforo.off()
-        return "puerta general abierta"
-
-    def doorClose(self):
-        self.electroiman.off()
-        self.semaforo.on()
-        return "puerta general cerrada"
-    
-    def electroimanSpecialOpen(self):
-        self.electroiman_especial.on()
-        return "Electroiman especial abierto"
-    
-    def electroimanSpecialClose(self):
-        self.electroiman_especial.off()
-        return "Electroiman especial cerrado" 
