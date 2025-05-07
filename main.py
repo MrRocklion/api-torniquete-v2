@@ -3,11 +3,8 @@ import threading
 from rs232 import rs232Comunication
 from MecanismLogic import Manager
 from database.SqliteManager import SqliteManager
-from audioManager import AudioManager
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
+
 #version 4.0
 app = Flask(__name__)
 stop_event = threading.Event()

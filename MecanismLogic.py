@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 
 
 load_dotenv()
-ENVIRONMENT = os.getenv("ENVIRONMENT", "RASPBERRY")
-logger.info("Environment: %s", ENVIRONMENT)
+ENVIRONMENT = os.getenv("TARGET", "RASPBERRY")
+logger.info("PLACA SELECCIONADA: %s", ENVIRONMENT)
 doors = GpiosManager()
 
 
