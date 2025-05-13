@@ -30,8 +30,8 @@ def normal_door(target_time):
     start = time.time()
     counter = 0
     while time.time() - start < target_time:
-        if doors.ReadSensor():
-            while doors.ReadSensor():
+        if doors.read_sensor():
+            while doors.read_sensor():
                 if time.time() - start >= target_time:
                     break
             counter += 1  
@@ -101,7 +101,7 @@ class Manager(threading.Thread, GpiosManager):
         return "Pase especial con éxito"
 
     def read_sensor(self):
-        return doors.ReadSensor()
+        return doors.read_sensor()
 
     def test_lock(self):
         return doors.test_lock()
